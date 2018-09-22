@@ -36,7 +36,7 @@
                 <input readonly id="g" v-model="g" class="form-control form" type="number" min=0>
               </div>
               <div class="col">
-                <label>水平方向加速度</label>
+                <label>水平方向速度</label>
                 <input id="a" v-model="a" class="form-control form" type="number" min=1 step="0.01">
               </div>
             </div>
@@ -55,8 +55,9 @@
               <input id="fall" type="button" class="btn btn-info"
                 value="ボールを落とす">-->
                 <input id="fall" type="button" class="btn btn-outline-danger"
-                v-on:click="clear()"  value="clear"> 
-
+                v-on:click="clear()"  value="アニメーションクリア"> 
+                <input id="fall" type="button" class="btn btn-danger"
+                v-on:click="dataClear()"  value="結果をクリア"> 
               <div class="toggle-form">
                 <div class="toggle">
                   <p>軌跡モード</p>
@@ -69,7 +70,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-8 anime">
           <canvas id="canvas" class="canvas">
           </canvas>
         </div>
@@ -81,34 +82,17 @@
           <thead>
             <tr class="table-info">
               <th scope="col">#</th>
-              <th scope="col">速さ</th>
-              <th scope="col">高さ</th>
-              <th scope="col">ボールを話した時間</th>
+              <th scope="col">ボールを離した時間</th>
               <th scope="col">ターゲットからの距離</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>10</td>
-              <td>20</td>
-              <td>10:20:30</td>
-              <td>10</td>
+            <tr v-for="(index, h) in histories">
+              <th scope="row">{{ index + 1 }}</th>
+              <td>{{ h.fallTime }}</td>
+              <td>{{ h.x }}</td>
             </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>10</td>
-              <td>20</td>
-              <td>10:20:30</td>
-              <td>10</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>10</td>
-              <td>20</td>
-              <td>10:20:30</td>
-              <td>10</td>
-            </tr>
+
           </tbody>
         </table>
       </div>
