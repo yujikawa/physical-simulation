@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="jp">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>自由落下シミュレータ</title>
+    <script src="assets/js/vue.js"></script>
+    <script src="assets/js/moment.js"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+  </head>
+  <body>
+
+    <div id="app" class="container">
+      <div class="row">
+        <div class="col-sm-4">
+          <div id="parameter" class="param-panel">
+            <p>パラメータ設定</p>
+
+            <div class="row">
+              <div class="col">
+                <label>x軸</label>
+                <input readonly id="x" v-model="x" class="form-control form" type="number" min=0>
+              </div>
+              <div class="col">
+                <label>y軸</label>
+                <input readonly id="y" v-model="y" class="form-control form" type="number" min=0>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <label>重力加速度</label>
+                <input readonly id="g" v-model="g" class="form-control form" type="number" min=0>
+              </div>
+              <div class="col">
+                <label>水平方向加速度</label>
+                <input id="a" v-model="a" class="form-control form" type="number" min=1 step="0.01">
+              </div>
+            </div>
+
+            <div class="row">
+
+              <div class="col">
+                <label>時間</label>
+                <input id="t" v-model="t" class="form-control form" type="number" min=0.01 step="0.01">
+              </div>
+            </div>
+            
+            <div class="button-panel">
+              <!-- <input id="start" type="button" class="btn btn-primary"
+                v-on:click="start()" value="開始">
+              <input id="fall" type="button" class="btn btn-info"
+                value="ボールを落とす">-->
+                <input id="fall" type="button" class="btn btn-outline-danger"
+                v-on:click="clear()"  value="clear"> 
+
+              <div class="toggle-form">
+                <div class="toggle">
+                  <p>軌跡モード</p>
+                  <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-8">
+          <canvas id="canvas" class="canvas">
+          </canvas>
+        </div>
+      </div>
+
+      <div class="result">
+        <p>結果</p>
+        <table class="table table-hover">
+          <thead>
+            <tr class="table-info">
+              <th scope="col">#</th>
+              <th scope="col">速さ</th>
+              <th scope="col">高さ</th>
+              <th scope="col">ボールを話した時間</th>
+              <th scope="col">ターゲットからの距離</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">1</th>
+              <td>10</td>
+              <td>20</td>
+              <td>10:20:30</td>
+              <td>10</td>
+            </tr>
+            <tr>
+              <th scope="row">2</th>
+              <td>10</td>
+              <td>20</td>
+              <td>10:20:30</td>
+              <td>10</td>
+            </tr>
+            <tr>
+              <th scope="row">3</th>
+              <td>10</td>
+              <td>20</td>
+              <td>10:20:30</td>
+              <td>10</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+
+  </body>
+</html>
