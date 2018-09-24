@@ -18,7 +18,12 @@
         <div class="col-sm-4">
           <div id="parameter" class="param-panel">
             <p>パラメータ設定</p>
-
+            <div class="row">
+              <div class="col">
+                <label>被験者名</label>
+                <input id="name" v-model="name" class="form-control form" type="text" placeholder="例: 田中太郎">
+              </div>
+            </div>
             <div class="row">
               <div class="col">
                 <label>x軸</label>
@@ -54,10 +59,9 @@
                 v-on:click="start()" value="開始">
               <input id="fall" type="button" class="btn btn-info"
                 value="ボールを落とす">-->
-                <input id="fall" type="button" class="btn btn-outline-danger"
-                v-on:click="clear()"  value="アニメーションクリア"> 
                 <input id="fall" type="button" class="btn btn-danger"
-                v-on:click="dataClear()"  value="結果をクリア"> 
+                v-on:click="clear()"  value="アニメーションクリア"> 
+
               <div class="toggle-form">
                 <div class="toggle">
                   <p>軌跡モード</p>
@@ -78,6 +82,11 @@
 
       <div class="result">
         <p>結果</p>
+        <div class="result-form d-flex justify-content-end">
+        <a class="btn btn-primary download" id="download" href="#" download="{{ name }}_result.csv" v-on:click="exportCsv()">CSVダウンロード</a>
+        <input id="fall" type="button" class="btn btn-danger"
+        v-on:click="dataClear()"  value="結果をクリア"> 
+      </div>
         <table class="table table-hover">
           <thead>
             <tr class="table-info">
@@ -89,8 +98,8 @@
           <tbody>
             <tr v-for="(index, h) in histories">
               <th scope="row">{{ index + 1 }}</th>
-              <td>{{ h.fallTime }}</td>
-              <td>{{ h.x }}</td>
+              <td>{{ h[0] }}</td>
+              <td>{{ h[1] }}</td>
             </tr>
 
           </tbody>

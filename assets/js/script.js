@@ -14,7 +14,8 @@ new Vue({
     v: 0.0, // 速度
     t: 0.15, // 時間
     e: -0.7, // 反発係数
-    fallTime: '',
+    name: '',
+    fallTime: "",
     requestAnimationFrameId: null,
     histories: []
   },
@@ -75,7 +76,11 @@ new Vue({
 
       if (this.y > this.canvas.height - 5) {
         cancelAnimationFrame(this.requestAnimationFrameId);
-        this.pushHistory({fallTime: this.fallTime, x: this.x - (this.canvas.width / 2), a: this.a})
+        this.pushHistory([
+          this.fallTime,
+          this.x - this.canvas.width / 2,
+          this.a
+        ]);
         return;
       }
       this.requestAnimationFrameId = requestAnimationFrame(this.verticalMove);
@@ -112,7 +117,32 @@ new Vue({
       this.histories = [];
     },
     pushHistory: function(history) {
-      this.histories.push(history)
+      this.histories.push(history);
+    },
+    exportCsv: function() {
+      const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
+      let content = this.formatCsv();
+      console.log(content);
+      const blob = new Blob([bom, content], { type: "text/csv" });
+      if (window.navigator.msSaveBlob) {
+        window.navigator.msSaveBlob(blob, this.name + "_result.csv");
+        window.navigator.msSaveOrOpenBlob(blob, this.name + "_result.csv");
+      } else {
+        document.getElementById("download").href = window.URL.createObjectURL(
+          blob
+        );
+      }
+    },
+    formatCsv: function() {
+      let content = "";
+      for(let i in this.histories){
+        if (content === "") {
+          content = this.histories[i].join(",") + "\n";
+        } else {
+          content = content + this.histories[i].join(",") + "\n";
+        }
+      }
+      return content;
     }
   }
 });
