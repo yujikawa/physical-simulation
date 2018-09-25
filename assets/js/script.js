@@ -10,10 +10,11 @@ new Vue({
     x: 10, // x軸
     y: 30, // y軸
     g: 9.8, // 重力加速度
-    a: 20, // 加速度
-    v: 0.0, // 速度
+    vx: 20, // 水平速度
+    vy: 0.0, // 速度
     t: 0.15, // 時間
-    e: -0.7, // 反発係数
+    k: 0.6,
+    mode: false,
     name: '',
     fallTime: "",
     requestAnimationFrameId: null,
@@ -33,22 +34,23 @@ new Vue({
     this.canvas.addEventListener("mouseup", this.onMouseUp, false);
   },
   methods: {
-    onMouseDown: function() {
-      console.log("onMouseDown");
-      console.log(moment().format("YYYY年MM月DD日 HH:mm:ss.SSS"));
-      this.run(this.horizontalMove);
+    onMouseDown() {
+      // マウスダウン関数
+      console.log(this.mode);
+      this.draw(this.horizontalMove);
     },
-    onMouseUp: function() {
-      console.log("onMouseUp");
-      console.log(moment().format("YYYY年MM月DD日 HH:mm:ss.SSS"));
+    onMouseUp() {
+      // マウスアップ関数
       this.fallTime = moment().format("YYYY年MM月DD日 HH:mm:ss.SSS");
-      this.run(this.verticalMove);
+      this.draw(this.verticalMove);
     },
     horizontalMove() {
-      console.log("horizontalMove");
-      // 描画クリア
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      // 水平に動かす関数
 
+      // 描画クリア
+      if(!this.mode){
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      };
       // taget描画
       this.target();
       this.ctx.beginPath();
@@ -56,12 +58,16 @@ new Vue({
       this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
       this.ctx.fill();
       this.ctx.closePath();
-      this.x += this.a * this.t;
+      this.x += this.vx * this.t;
       this.requestAnimationFrameId = requestAnimationFrame(this.horizontalMove);
     },
-    verticalMove: function() {
+    verticalMove() {
+      // 垂直方向に動かす関数
+
       // 描画クリア
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      if(!this.mode){
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      };
       // taget描画
       this.target();
       // 描画Start
@@ -71,21 +77,23 @@ new Vue({
       this.ctx.fill();
       this.ctx.closePath();
 
-      this.v += this.g * this.t;
-      this.y += this.v * this.t;
+      this.vy += this.g * this.t;
+      this.y += this.vy * this.t;
 
       if (this.y > this.canvas.height - 5) {
         cancelAnimationFrame(this.requestAnimationFrameId);
+        // 検証結果を追加
         this.pushHistory([
           this.fallTime,
           this.x - this.canvas.width / 2,
-          this.a
+          this.vx
         ]);
         return;
       }
       this.requestAnimationFrameId = requestAnimationFrame(this.verticalMove);
     },
-    run: function(moveFunc) {
+    draw(moveFunc) {
+      // 描画実行関数
       this.target();
       if (this.y > this.canvas.height - 5) {
         cancelAnimationFrame(this.requestAnimationFrameId);
@@ -93,13 +101,13 @@ new Vue({
         moveFunc();
       }
     },
-    clear: function() {
-      // 描画クリア
+    clear() {
+      // 描画クリア&初期値クリア関数
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.x = 10;
       this.y = 30; //距離
       this.g = 9.8; //重力加速度
-      this.v = 0.0; //速度
+      this.vy = 0.0; //速度
       this.t = 0.15; //時間
       this.e = -0.7; //反発係数
       this.ctx.beginPath();
@@ -110,19 +118,22 @@ new Vue({
       this.target();
       cancelAnimationFrame(this.requestAnimationFrameId);
     },
-    target: function() {
+    target() {
+      // ターゲット描画関数
       this.ctx.fillRect(this.canvas.width / 2, this.canvas.height - 1, 10, 1);
     },
-    dataClear: function() {
+    clearHistories() {
+      // 結果クリア関数
       this.histories = [];
     },
-    pushHistory: function(history) {
+    pushHistory(history) {
+      // 結果の追加
       this.histories.push(history);
     },
-    exportCsv: function() {
+    exportCsv() {
+      // CSV出力関数
       const bom = new Uint8Array([0xef, 0xbb, 0xbf]);
       let content = this.formatCsv();
-      console.log(content);
       const blob = new Blob([bom, content], { type: "text/csv" });
       if (window.navigator.msSaveBlob) {
         window.navigator.msSaveBlob(blob, this.name + "_result.csv");
@@ -133,7 +144,8 @@ new Vue({
         );
       }
     },
-    formatCsv: function() {
+    formatCsv() {
+      // CSVフォーマット関数
       let content = "";
       for(let i in this.histories){
         if (content === "") {
