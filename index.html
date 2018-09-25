@@ -1,113 +1,124 @@
 <!DOCTYPE html>
 <html lang="jp">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>自由落下シミュレータ</title>
-    <script src="assets/js/vue.js"></script>
-    <script src="assets/js/moment.js"></script>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>自由落下シミュレータ</title>
+  <script src="assets/js/vue.js"></script>
+  <script src="assets/js/moment.js"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 
-    <div id="app" class="container">
-      <div class="row">
-        <div class="col-sm-4">
-          <div id="parameter" class="param-panel">
-            <p>パラメータ設定</p>
-            <div class="row">
-              <div class="col">
-                <label>被験者名</label>
-                <input id="name" v-model="name" class="form-control form" type="text" placeholder="例: 田中太郎">
-              </div>
+  <meta property="og:url" content="https://physical-simulation.firebaseapp.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="自由落下シミュレータ" />
+  <meta property="og:description" content="自由落下をシミュレーションするアプリです。" />
+  <meta property="og:site_name" content="自由落下シミュレータ" />
+  <meta property="og:image" content="https://physical-simulation.firebaseapp.com/assets/images/ogp.png" />
+
+<body>
+
+  <div id="app" class="container">
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="parameter" class="param-panel">
+          <p>パラメータ設定</p>
+          <div class="row">
+            <div class="col">
+              <label>被験者名</label>
+              <input id="name" v-model="name" class="form-control form" type="text" placeholder="例: 田中太郎">
             </div>
-            <div class="row">
-              <div class="col">
-                <label>x軸</label>
-                <input readonly id="x" v-model="x" class="form-control form" type="number" min=0>
-              </div>
-              <div class="col">
-                <label>y軸</label>
-                <input readonly id="y" v-model="y" class="form-control form" type="number" min=0>
-              </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label>x軸</label>
+              <input readonly id="x" v-model="x" class="form-control form" type="number" min=0>
             </div>
-
-            <div class="row">
-              <div class="col">
-                <label>重力加速度</label>
-                <input readonly id="g" v-model="g" class="form-control form" type="number" min=0>
-              </div>
-              <div class="col">
-                <label>水平方向速度</label>
-                <input id="vx" v-model="vx" class="form-control form" type="number" min=1 step="0.01">
-              </div>
+            <div class="col">
+              <label>y軸</label>
+              <input readonly id="y" v-model="y" class="form-control form" type="number" min=0>
             </div>
+          </div>
 
-            <div class="row">
-
-              <div class="col">
-                <label>時間</label>
-                <input id="t" v-model="t" class="form-control form" type="number" min=0.01 step="0.01">
-              </div>
+          <div class="row">
+            <div class="col">
+              <label>重力加速度</label>
+              <input readonly id="g" v-model="g" class="form-control form" type="number" min=0>
             </div>
-            
-            <div class="button-panel">
-              <!-- <input id="start" type="button" class="btn btn-primary"
+            <div class="col">
+              <label>水平方向速度</label>
+              <input id="vx" v-model="vx" class="form-control form" type="number" min=1 step="0.01">
+            </div>
+          </div>
+
+          <div class="row">
+
+            <div class="col">
+              <label>時間</label>
+              <input id="t" v-model="t" class="form-control form" type="number" min=0.01 step="0.01">
+            </div>
+          </div>
+
+          <div class="button-panel">
+            <!-- <input id="start" type="button" class="btn btn-primary"
                 v-on:click="start()" value="開始">
               <input id="fall" type="button" class="btn btn-info"
                 value="ボールを落とす">-->
-                <input id="fall" type="button" class="btn btn-danger"
-                v-on:click="clear()"  value="アニメーションクリア"> 
+            <input id="fall" type="button" class="btn btn-danger" v-on:click="clear()" value="アニメーションクリア">
 
-              <div class="toggle-form">
-                <div class="toggle">
-                  <p>軌跡モード</p>
-                  <label class="switch">
-                    <input id="mode" v-model="mode" type="checkbox">
-                    <span class="slider round"></span>
-                  </label>
-                </div>
+            <div class="toggle-form">
+              <div class="toggle">
+                <p>軌跡モード</p>
+                <label class="switch">
+                  <input id="mode" v-model="mode" type="checkbox">
+                  <span class="slider round"></span>
+                </label>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-sm-8 anime">
-          <canvas id="canvas" class="canvas">
-          </canvas>
-        </div>
       </div>
-
-      <div class="result">
-        <p>結果</p>
-        <div class="result-form d-flex justify-content-end">
-        <a class="btn btn-primary download" id="download" href="#" download="{{ name }}_result.csv" v-on:click="exportCsv()">CSVダウンロード</a>
-        <input id="fall" type="button" class="btn btn-danger"
-        v-on:click="clearHistories()"  value="結果をクリア"> 
-      </div>
-        <table class="table table-hover">
-          <thead>
-            <tr class="table-info">
-              <th scope="col">#</th>
-              <th scope="col">ボールを離した時間</th>
-              <th scope="col">ターゲットからの距離</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(index, h) in histories">
-              <th scope="row">{{ index + 1 }}</th>
-              <td>{{ h[0] }}</td>
-              <td>{{ h[1] }}</td>
-            </tr>
-
-          </tbody>
-        </table>
+      <div class="col-sm-8 anime">
+        <canvas id="canvas" class="canvas">
+        </canvas>
       </div>
     </div>
 
-    <script src="assets/js/script.js"></script>
+    <div class="result">
+      <p>結果</p>
+      <div class="result-form d-flex justify-content-end">
+        <a v-if="histories.length > 0" class="btn btn-primary download" id="download" href="#" download="{{ name }}_result.csv"
+          v-on:click="exportCsv()" disabled="true">CSVダウンロード</a>
+        <a v-else class="btn btn-secondary download disabled" style="color:#fff;" id="download">CSVダウンロード</a>
 
-  </body>
+        <input v-if="histories.length > 0" id="fall" type="button" class="btn btn-danger" v-on:click="clearHistories()"
+          value="結果をクリア">
+        <input v-else id="fall" type="button" class="btn btn-secondary disabled" value="結果をクリア">
+      </div>
+      <table class="table table-hover">
+        <thead>
+          <tr class="table-info">
+            <th scope="col">#</th>
+            <th scope="col">ボールを離した時間</th>
+            <th scope="col">ターゲットからの距離</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(index, h) in histories">
+            <th scope="row">{{ index + 1 }}</th>
+            <td>{{ h[0] }}</td>
+            <td>{{ h[1] }}</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="assets/js/script.js"></script>
+
+</body>
+
 </html>
