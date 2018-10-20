@@ -5,6 +5,10 @@ var ctx = canvas.getContext("2d");
 new Vue({
   el: "#app",
   data: {
+    anime: false,
+    animeDisplay: 'none',
+    params: true,
+    paramsDisplay: '',
     canvas: canvas,
     ctx: ctx,
     x: 10, // x軸
@@ -155,6 +159,20 @@ new Vue({
         }
       }
       return content;
+    },
+    paramsMenu() {
+      this.anime = false;
+      this.params =  true;
+      this.animeDisplay = 'none';
+      this.paramsDisplay = '';
+      console.log(this.paramsDisplay )
+    },
+    animeMenu() {
+      this.anime = true;
+      this.params = false;
+      this.animeDisplay = '';
+      this.paramsDisplay = 'none';
+      console.log(this.paramsDisplay )
     }
   }
 });
