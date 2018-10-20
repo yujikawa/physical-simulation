@@ -6,9 +6,9 @@ new Vue({
   el: "#app",
   data: {
     anime: false,
-    animeDisplay: 'none',
+    animeDisplay: "none",
     params: true,
-    paramsDisplay: '',
+    paramsDisplay: "",
     canvas: canvas,
     ctx: ctx,
     x: 10, // x軸
@@ -19,9 +19,9 @@ new Vue({
     t: 0.15, // 時間
     k: 0.6,
     mode: false,
-    name: '',
-    startTime: '',
-    fallTime: '',
+    name: "",
+    startTime: "",
+    fallTime: "",
     requestAnimationFrameId: null,
     histories: []
   },
@@ -35,6 +35,7 @@ new Vue({
     this.ctx.fill();
     this.ctx.closePath();
     this.target();
+    this.box();
     this.canvas.addEventListener("mousedown", this.onMouseDown, false);
     this.canvas.addEventListener("mouseup", this.onMouseUp, false);
   },
@@ -55,9 +56,11 @@ new Vue({
       // 水平に動かす関数
 
       // 描画クリア
-      if(!this.mode){
+      if (!this.mode) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      };
+      }
+      // box
+      this.box();
       // taget描画
       this.target();
       this.ctx.beginPath();
@@ -72,9 +75,11 @@ new Vue({
       // 垂直方向に動かす関数
 
       // 描画クリア
-      if(!this.mode){
+      if (!this.mode) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      };
+      }
+      // box
+      this.box();
       // taget描画
       this.target();
       // 描画Start
@@ -123,12 +128,23 @@ new Vue({
       this.ctx.fill();
       this.ctx.closePath();
       this.target();
+      this.box();
       cancelAnimationFrame(this.requestAnimationFrameId);
     },
     target() {
       // ターゲット描画関数
+      this.ctx.beginPath();
       this.ctx.fillStyle = "rgb(204, 0, 0, 0.4)";
       this.ctx.fillRect(this.canvas.width / 2, 0, 1, this.canvas.height);
+      this.ctx.closePath();
+    },
+    box() {
+      // 箱
+      this.ctx.beginPath();
+      this.ctx.strokeRect(this.x - 10, 20, 20, 20);
+      this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+      this.ctx.fill();
+      this.ctx.closePath();
     },
     clearHistories() {
       // 結果クリア関数
@@ -155,7 +171,7 @@ new Vue({
     formatCsv() {
       // CSVフォーマット関数
       let content = "";
-      for(let i in this.histories){
+      for (let i in this.histories) {
         if (content === "") {
           content = this.histories[i].join(",") + "\n";
         } else {
@@ -166,17 +182,17 @@ new Vue({
     },
     paramsMenu() {
       this.anime = false;
-      this.params =  true;
-      this.animeDisplay = 'none';
-      this.paramsDisplay = '';
-      console.log(this.paramsDisplay )
+      this.params = true;
+      this.animeDisplay = "none";
+      this.paramsDisplay = "";
+      console.log(this.paramsDisplay);
     },
     animeMenu() {
       this.anime = true;
       this.params = false;
-      this.animeDisplay = '';
-      this.paramsDisplay = 'none';
-      console.log(this.paramsDisplay )
+      this.animeDisplay = "";
+      this.paramsDisplay = "none";
+      console.log(this.paramsDisplay);
     }
   }
 });
