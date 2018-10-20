@@ -1,3 +1,11 @@
+#header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.nav-link {
+  cursor: pointer;
+}
 .container {
   margin-top: 20px;
 }
@@ -19,7 +27,7 @@ label {
   padding: 10px;
   width: 100%;
   min-width: 500px;
-  height: 500px;
+  height: 100%;
   background: #effaff;
   border-radius: 10px;
 }
@@ -58,6 +66,10 @@ label {
 
 .result {
   margin-top: 10px;
+}
+
+.scroll {
+  overflow: scroll;
 }
 .result-form {
   margin-bottom: 10px;

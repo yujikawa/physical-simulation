@@ -44,7 +44,6 @@ new Vue({
       // マウスダウン関数
       console.log(this.mode);
       this.startTime = moment().format("YYYY年MM月DD日 HH:mm:ss.SSS");
-
       this.draw(this.horizontalMove);
     },
     onMouseUp() {
