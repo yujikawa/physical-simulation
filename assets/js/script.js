@@ -5,6 +5,10 @@ var ctx = canvas.getContext("2d");
 new Vue({
   el: "#app",
   data: {
+    anime: false,
+    animeDisplay: "none",
+    params: true,
+    paramsDisplay: "",
     canvas: canvas,
     ctx: ctx,
     x: 10, // x軸
@@ -15,7 +19,8 @@ new Vue({
     t: 0.15, // 時間
     k: 0.6,
     mode: false,
-    name: '',
+    name: "",
+    startTime: "",
     fallTime: "",
     requestAnimationFrameId: null,
     histories: []
@@ -30,6 +35,7 @@ new Vue({
     this.ctx.fill();
     this.ctx.closePath();
     this.target();
+    this.box();
     this.canvas.addEventListener("mousedown", this.onMouseDown, false);
     this.canvas.addEventListener("mouseup", this.onMouseUp, false);
   },
@@ -37,6 +43,8 @@ new Vue({
     onMouseDown() {
       // マウスダウン関数
       console.log(this.mode);
+      this.startTime = moment().format("YYYY年MM月DD日 HH:mm:ss.SSS");
+
       this.draw(this.horizontalMove);
     },
     onMouseUp() {
@@ -48,9 +56,11 @@ new Vue({
       // 水平に動かす関数
 
       // 描画クリア
-      if(!this.mode){
+      if (!this.mode) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      };
+      }
+      // box
+      this.box();
       // taget描画
       this.target();
       this.ctx.beginPath();
@@ -65,9 +75,11 @@ new Vue({
       // 垂直方向に動かす関数
 
       // 描画クリア
-      if(!this.mode){
+      if (!this.mode) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      };
+      }
+      // box
+      this.box();
       // taget描画
       this.target();
       // 描画Start
@@ -84,9 +96,9 @@ new Vue({
         cancelAnimationFrame(this.requestAnimationFrameId);
         // 検証結果を追加
         this.pushHistory([
+          this.startTime,
           this.fallTime,
-          this.x - this.canvas.width / 2,
-          this.vx
+          this.x - this.canvas.width / 2
         ]);
         return;
       }
@@ -116,11 +128,23 @@ new Vue({
       this.ctx.fill();
       this.ctx.closePath();
       this.target();
+      this.box();
       cancelAnimationFrame(this.requestAnimationFrameId);
     },
     target() {
       // ターゲット描画関数
-      this.ctx.fillRect(this.canvas.width / 2, this.canvas.height - 1, 10, 1);
+      this.ctx.beginPath();
+      this.ctx.fillStyle = "rgb(204, 0, 0, 0.4)";
+      this.ctx.fillRect(this.canvas.width / 2, 0, 1, this.canvas.height);
+      this.ctx.closePath();
+    },
+    box() {
+      // 箱
+      this.ctx.beginPath();
+      this.ctx.strokeRect(this.x - 10, 20, 20, 20);
+      this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+      this.ctx.fill();
+      this.ctx.closePath();
     },
     clearHistories() {
       // 結果クリア関数
@@ -147,7 +171,7 @@ new Vue({
     formatCsv() {
       // CSVフォーマット関数
       let content = "";
-      for(let i in this.histories){
+      for (let i in this.histories) {
         if (content === "") {
           content = this.histories[i].join(",") + "\n";
         } else {
@@ -155,6 +179,20 @@ new Vue({
         }
       }
       return content;
+    },
+    paramsMenu() {
+      this.anime = false;
+      this.params = true;
+      this.animeDisplay = "none";
+      this.paramsDisplay = "";
+      console.log(this.paramsDisplay);
+    },
+    animeMenu() {
+      this.anime = true;
+      this.params = false;
+      this.animeDisplay = "";
+      this.paramsDisplay = "none";
+      console.log(this.paramsDisplay);
     }
   }
 });
