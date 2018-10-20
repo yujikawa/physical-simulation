@@ -20,7 +20,8 @@ new Vue({
     k: 0.6,
     mode: false,
     name: '',
-    fallTime: "",
+    startTime: '',
+    fallTime: '',
     requestAnimationFrameId: null,
     histories: []
   },
@@ -41,6 +42,8 @@ new Vue({
     onMouseDown() {
       // マウスダウン関数
       console.log(this.mode);
+      this.startTime = moment().format("YYYY年MM月DD日 HH:mm:ss.SSS");
+
       this.draw(this.horizontalMove);
     },
     onMouseUp() {
@@ -88,9 +91,9 @@ new Vue({
         cancelAnimationFrame(this.requestAnimationFrameId);
         // 検証結果を追加
         this.pushHistory([
+          this.startTime,
           this.fallTime,
-          this.x - this.canvas.width / 2,
-          this.vx
+          this.x - this.canvas.width / 2
         ]);
         return;
       }
@@ -124,7 +127,8 @@ new Vue({
     },
     target() {
       // ターゲット描画関数
-      this.ctx.fillRect(this.canvas.width / 2, this.canvas.height - 1, 10, 1);
+      this.ctx.fillStyle = "rgb(204, 0, 0, 0.4)";
+      this.ctx.fillRect(this.canvas.width / 2, 0, 1, this.canvas.height);
     },
     clearHistories() {
       // 結果クリア関数
