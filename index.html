@@ -44,7 +44,9 @@
 
     <!-- Animation -->
     <div class="anime" v-bind:style="{ display: animeDisplay }">
-      <canvas id="canvas" class="canvas"></canvas>
+      <canvas id="canvas" width=600 height=300 class="canvas"
+      v-bind:style="{ width: canvasWidth, height: canvasHeight }" 
+      ></canvas>
     </div>
 
     <!-- Params & Results -->

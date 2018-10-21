@@ -5,6 +5,10 @@ var ctx = canvas.getContext("2d");
 new Vue({
   el: "#app",
   data: {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    canvasWidth: '1200px',
+    canvasHeight: '600px',
     anime: false,
     animeDisplay: "none",
     params: true,
@@ -26,6 +30,10 @@ new Vue({
     histories: []
   },
   created: function() {
+    this.canvasWidth = this.width + 'px';
+    this.canvasHeight = (this.height - 60) + 'px';
+    console.log(this.width );
+    console.log(this.height);
     console.log("onClick event register");
     // start地点の描画
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
