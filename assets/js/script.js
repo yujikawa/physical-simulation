@@ -17,11 +17,14 @@ new Vue({
     ctx: ctx,
     x: 10, // x軸
     y: 30, // y軸
-    g: 9.8, // 重力加速度
-    vx: 20, // 水平速度
-    vy: 0.0, // 速度
+    g: 9.08665, // 重力加速度
+    m: 1, // 質量
+    vx: 20.0, // 水平速度
+    vy: 0.0, // 垂直速度
     t: 0.15, // 時間
-    k: 0.6,
+    k: 0.24, // 空気抵抗係数
+    ax: 0.0,
+    ay: 9.08665,
     mode: false,
     isLine: true,
     name: "",
@@ -29,15 +32,14 @@ new Vue({
     startUnixTime: "",
     fallTime: "",
     fallUnixTime: "",
-    requestAnimationFrameId: null,
-    histories: []
+    requestAnimationHFrameId: null,
+    requestAnimationVFrameId: null,
+    histories: [],
+    isMouseUp: false
   },
   created: function() {
     this.canvasWidth = this.width + 'px';
     this.canvasHeight = (this.height - 60) + 'px';
-    console.log(this.width );
-    console.log(this.height);
-    console.log("onClick event register");
     // start地点の描画
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.beginPath();
@@ -53,6 +55,7 @@ new Vue({
   methods: {
     onMouseDown() {
       // マウスダウン関数
+      this.isMouseUp = false;
       const startTime = moment();
       this.startTime = startTime.format("HH:mm:ss.SSS");
       this.startUnixTime = startTime.format("x");
@@ -60,6 +63,7 @@ new Vue({
     },
     onMouseUp() {
       // マウスアップ関数
+      this.isMouseUp = true;
       const fallTime = moment();
       this.fallTime = fallTime.format("HH:mm:ss.SSS");
       this.fallUnixTime = fallTime.format("x");
@@ -81,8 +85,10 @@ new Vue({
       this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
       this.ctx.fill();
       this.ctx.closePath();
+      // this.vx = this.vx + this.ax * this.t;
       this.x += this.vx * this.t;
-      this.requestAnimationFrameId = requestAnimationFrame(this.horizontalMove);
+      // this.ax = -1 * (this.k/this.m) * this.vx;
+      this.requestAnimationHFrameId = requestAnimationFrame(this.horizontalMove);
     },
     verticalMove() {
       // 垂直方向に動かす関数
@@ -101,12 +107,15 @@ new Vue({
       this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
       this.ctx.fill();
       this.ctx.closePath();
+      
 
-      this.vy += this.g * this.t;
-      this.y += this.vy * this.t;
+      this.vy += (this.g - (this.k/this.m))* this.t;
+      this.y  += this.vy * this.t;
+          
 
       if (this.y > this.canvas.height - 5) {
-        cancelAnimationFrame(this.requestAnimationFrameId);
+        cancelAnimationFrame(this.requestAnimationHFrameId);
+        cancelAnimationFrame(this.requestAnimationVFrameId);
         // 検証結果を追加
         this.pushHistory([
           this.startTime,
@@ -117,26 +126,31 @@ new Vue({
         ]);
         return;
       }
-      this.requestAnimationFrameId = requestAnimationFrame(this.verticalMove);
+      this.requestAnimationVFrameId = requestAnimationFrame(this.verticalMove);
     },
     draw(moveFunc) {
       // 描画実行関数
       this.target();
       if (this.y > this.canvas.height - 5) {
-        cancelAnimationFrame(this.requestAnimationFrameId);
+        cancelAnimationFrame(this.requestAnimationHFrameId);
+        cancelAnimationFrame(this.requestAnimationVFrameId);
       } else {
         moveFunc();
+
       }
     },
     clear() {
       // 描画クリア&初期値クリア関数
+      cancelAnimationFrame(this.requestAnimationHFrameId);
+      cancelAnimationFrame(this.requestAnimationVFrameId);
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.x = 10;
-      this.y = 30; //距離
-      this.g = 9.8; //重力加速度
-      this.vy = 0.0; //速度
-      this.t = 0.15; //時間
-      this.e = -0.7; //反発係数
+      this.y = 30;
+      this.g = 9.8;
+      this.vy = 0.0;
+      this.vx = 15.0;
+      this.ax = 0.0;
+      this.ay = -9.8
       this.ctx.beginPath();
       this.ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, false);
       this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";

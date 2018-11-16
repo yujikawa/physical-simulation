@@ -81,15 +81,29 @@
                 <label>水平方向速度</label>
                 <input id="vx" v-model="vx" class="form-control form" type="number" min=1 step="0.01">
               </div>
-            </div>
-
-            <div class="row">
-
               <div class="col">
-                <label>時間</label>
-                <input id="t" v-model="t" class="form-control form" type="number" min=0.01 step="0.01">
+                <label>垂直方向速度</label>
+                <input readonly id="vy" v-model="vy" class="form-control form" type="number" min=1 step="0.01">
               </div>
             </div>
+
+            <p>パラメータ設定</p>
+            <div class="row">
+                <div class="col">
+                  <label>物体質量</label>
+                  <input id="m" v-model="m" class="form-control form" type="number" min=1>
+                </div>
+
+                <div class="col">
+                  <label>空気抵抗係数</label>
+                  <input id="k" v-model="k" class="form-control form" type="number" min=1 step="0.01">
+                </div>
+
+                <div class="col">
+                    <label>時間</label>
+                    <input id="t" v-model="t" class="form-control form" type="number" min=0.01 step="0.01">
+                  </div>
+              </div>
 
             <div class="button-panel">
               <!-- <input id="start" type="button" class="btn btn-primary"
@@ -98,23 +112,29 @@
                 value="ボールを落とす">-->
               <!-- <input id="fall" type="button" class="btn btn-danger" v-on:click="clear()" value="アニメーションクリア"> -->
 
-              <div class="toggle-form">
-                <div class="toggle">
-                  <p>軌跡モード</p>
-                  <label class="switch">
-                    <input id="mode" v-model="mode" type="checkbox">
-                    <span class="slider round"></span>
-                  </label>
-                </div>
-              </div>
-              <div class="toggle-form">
-                <div class="toggle">
-                  <p>点モード</p>
-                  <label class="switch">
-                    <input id="isLine" v-model="isLine" type="checkbox">
-                    <span class="slider round"></span>
-                  </label>
-                </div>
+              <div class="row">
+                  <div class="col">
+                      <div class="toggle-form">
+                          <div class="toggle">
+                            <p>軌跡モード</p>
+                            <label class="switch">
+                              <input id="mode" v-model="mode" type="checkbox">
+                              <span class="slider round"></span>
+                            </label>
+                          </div>
+                        </div>
+                    </div>
+                  <div class="col">
+                    <div class="toggle-form">
+                        <div class="toggle">
+                          <p>点モード</p>
+                          <label class="switch">
+                            <input id="isLine" v-model="isLine" type="checkbox">
+                            <span class="slider round"></span>
+                          </label>
+                        </div>
+                      </div>
+                  </div>
               </div>
             </div>
           </div>
