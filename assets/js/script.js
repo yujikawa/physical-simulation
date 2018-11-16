@@ -25,7 +25,9 @@ new Vue({
     mode: false,
     name: "",
     startTime: "",
+    startUnixTime: "",
     fallTime: "",
+    fallUnixTime: "",
     requestAnimationFrameId: null,
     histories: []
   },
@@ -50,13 +52,16 @@ new Vue({
   methods: {
     onMouseDown() {
       // マウスダウン関数
-      console.log(this.mode);
-      this.startTime = moment().format("YYYY年MM月DD日 HH:mm:ss.SSS");
+      const startTime = moment();
+      this.startTime = startTime.format("HH:mm:ss.SSS");
+      this.startUnixTime = startTime.format("x");
       this.draw(this.horizontalMove);
     },
     onMouseUp() {
       // マウスアップ関数
-      this.fallTime = moment().format("YYYY年MM月DD日 HH:mm:ss.SSS");
+      const fallTime = moment();
+      this.fallTime = fallTime.format("HH:mm:ss.SSS");
+      this.fallUnixTime = fallTime.format("x");
       this.draw(this.verticalMove);
     },
     horizontalMove() {
@@ -105,6 +110,8 @@ new Vue({
         this.pushHistory([
           this.startTime,
           this.fallTime,
+          this.startUnixTime,
+          this.fallUnixTime,
           this.x - this.canvas.width / 2
         ]);
         return;
@@ -177,7 +184,7 @@ new Vue({
     },
     formatCsv() {
       // CSVフォーマット関数
-      let content = "";
+      let content = "ボールが動き出した時間,ボールを離した時間,ボールが動き出した時間(Unix),ボールを離した時間(Unix),ターゲットからの距離\n";
       for (let i in this.histories) {
         if (content === "") {
           content = this.histories[i].join(",") + "\n";
