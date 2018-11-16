@@ -23,6 +23,7 @@ new Vue({
     t: 0.15, // 時間
     k: 0.6,
     mode: false,
+    isLine: true,
     name: "",
     startTime: "",
     startUnixTime: "",
@@ -147,10 +148,18 @@ new Vue({
     },
     target() {
       // ターゲット描画関数
-      this.ctx.beginPath();
-      this.ctx.fillStyle = "rgb(204, 0, 0, 0.4)";
-      this.ctx.fillRect(this.canvas.width / 2, 0, 1, this.canvas.height);
-      this.ctx.closePath();
+      if(this.isLine){
+        this.ctx.beginPath();
+        this.ctx.fillStyle = "rgb(204, 0, 0, 0.4)";
+        this.ctx.fillRect(this.canvas.width / 2, this.canvas.height - 10, 1, this.canvas.height);
+        this.ctx.closePath();
+      } else {
+        this.ctx.beginPath();
+        this.ctx.fillStyle = "rgb(204, 0, 0, 0.4)";
+        this.ctx.fillRect(this.canvas.width / 2, 0, 1, this.canvas.height);
+        this.ctx.closePath();
+      }
+
     },
     box() {
       // 箱
