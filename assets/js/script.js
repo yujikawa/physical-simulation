@@ -1,7 +1,8 @@
 // canvasの設定
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-
+var startX = 10;
+var startY = 30;
 new Vue({
   el: "#app",
   data: {
@@ -15,8 +16,8 @@ new Vue({
     paramsDisplay: "",
     canvas: canvas,
     ctx: ctx,
-    x: 10, // x軸
-    y: 30, // y軸
+    x: startX, // x軸
+    y: startY, // y軸
     g: 9.08665, // 重力加速度
     m: 1, // 質量
     vx: 20.0, // 水平速度
@@ -25,13 +26,17 @@ new Vue({
     k: 0.24, // 空気抵抗係数
     ax: 0.0,
     ay: 9.08665,
+    targetX: canvas.width / 2,
+    targetY: canvas.height,
     mode: false,
     isLine: true,
+    isBall: true,
     name: "",
     startTime: "",
     startUnixTime: "",
     fallTime: "",
     fallUnixTime: "",
+    fallBoxX: 0,
     requestAnimationHFrameId: null,
     requestAnimationVFrameId: null,
     histories: [],
@@ -67,7 +72,13 @@ new Vue({
       const fallTime = moment();
       this.fallTime = fallTime.format("HH:mm:ss.SSS");
       this.fallUnixTime = fallTime.format("x");
-      this.draw(this.verticalMove);
+      this.fallBoxX = this.x;
+      if(this.isBall){
+        this.draw(this.verticalMove);
+      } else {
+        cancelAnimationFrame(this.requestAnimationHFrameId);
+        cancelAnimationFrame(this.requestAnimationVFrameId);
+      } 
     },
     horizontalMove() {
       // 水平に動かす関数
@@ -80,15 +91,13 @@ new Vue({
       this.box();
       // taget描画
       this.target();
-      this.ctx.beginPath();
-      this.ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, false);
-      this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-      this.ctx.fill();
-      this.ctx.closePath();
+      // ballの描画
+      this.ball();
       // this.vx = this.vx + this.ax * this.t;
       this.x += this.vx * this.t;
       // this.ax = -1 * (this.k/this.m) * this.vx;
       this.requestAnimationHFrameId = requestAnimationFrame(this.horizontalMove);
+      console.log(this.requestAnimationVFrameId);
     },
     verticalMove() {
       // 垂直方向に動かす関数
@@ -101,13 +110,8 @@ new Vue({
       this.box();
       // taget描画
       this.target();
-      // 描画Start
-      this.ctx.beginPath();
-      this.ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, false);
-      this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-      this.ctx.fill();
-      this.ctx.closePath();
-      
+      // ballの描画
+      this.ball();
 
       this.vy += (this.g - (this.k/this.m))* this.t;
       this.y  += this.vy * this.t;
@@ -122,7 +126,9 @@ new Vue({
           this.fallTime,
           this.startUnixTime,
           this.fallUnixTime,
-          this.x - this.canvas.width / 2
+          this.x - this.targetX,
+          this.fallBoxX - this.targetX,
+          (this.fallBoxX - startX) / (this.fallUnixTime - this.startUnixTime)
         ]);
         return;
       }
@@ -148,7 +154,6 @@ new Vue({
       this.y = 30;
       this.g = 9.8;
       this.vy = 0.0;
-      this.vx = 15.0;
       this.ax = 0.0;
       this.ay = -9.8
       this.ctx.beginPath();
@@ -160,17 +165,26 @@ new Vue({
       this.box();
       cancelAnimationFrame(this.requestAnimationFrameId);
     },
+    ball() {
+      if(this.isBall){
+        this.ctx.beginPath();
+        this.ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, false);
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+        this.ctx.fill();
+        this.ctx.closePath();
+      }
+    },
     target() {
       // ターゲット描画関数
       if(this.isLine){
         this.ctx.beginPath();
         this.ctx.fillStyle = "rgb(204, 0, 0, 0.4)";
-        this.ctx.fillRect(this.canvas.width / 2, this.canvas.height - 10, 1, this.canvas.height);
+        this.ctx.fillRect(this.targetX, this.canvas.height - 10, 1, this.canvas.height);
         this.ctx.closePath();
       } else {
         this.ctx.beginPath();
         this.ctx.fillStyle = "rgb(204, 0, 0, 0.4)";
-        this.ctx.fillRect(this.canvas.width / 2, 0, 1, this.canvas.height);
+        this.ctx.fillRect(this.targetX, 0, 1, this.canvas.height);
         this.ctx.closePath();
       }
 
@@ -207,7 +221,7 @@ new Vue({
     },
     formatCsv() {
       // CSVフォーマット関数
-      let content = "ボールが動き出した時間,ボールを離した時間,ボールが動き出した時間(Unix),ボールを離した時間(Unix),ターゲットからの距離\n";
+      let content = "ボールが動き出した時間,ボールを離した時間,ボールが動き出した時間(Unix),ボールを離した時間(Unix),ターゲットからの距離,ボールを離した時のターゲットからの箱の距離,px/ms\n";
       for (let i in this.histories) {
         if (content === "") {
           content = this.histories[i].join(",") + "\n";
