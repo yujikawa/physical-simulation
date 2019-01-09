@@ -1,7 +1,8 @@
 // canvasの設定
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-
+var startX = 10;
+var startY = 30;
 new Vue({
   el: "#app",
   data: {
@@ -15,8 +16,8 @@ new Vue({
     paramsDisplay: "",
     canvas: canvas,
     ctx: ctx,
-    x: 10, // x軸
-    y: 30, // y軸
+    x: startX, // x軸
+    y: startY, // y軸
     g: 9.08665, // 重力加速度
     m: 1, // 質量
     vx: 20.0, // 水平速度
@@ -126,7 +127,8 @@ new Vue({
           this.startUnixTime,
           this.fallUnixTime,
           this.x - this.targetX,
-          this.fallBoxX - this.targetX
+          this.fallBoxX - this.targetX,
+          (this.fallBoxX - startX) / (this.fallUnixTime - this.startUnixTime)
         ]);
         return;
       }
@@ -219,7 +221,7 @@ new Vue({
     },
     formatCsv() {
       // CSVフォーマット関数
-      let content = "ボールが動き出した時間,ボールを離した時間,ボールが動き出した時間(Unix),ボールを離した時間(Unix),ターゲットからの距離,ボールを離した時のターゲットからの箱の距離\n";
+      let content = "ボールが動き出した時間,ボールを離した時間,ボールが動き出した時間(Unix),ボールを離した時間(Unix),ターゲットからの距離,ボールを離した時のターゲットからの箱の距離,px/ms\n";
       for (let i in this.histories) {
         if (content === "") {
           content = this.histories[i].join(",") + "\n";
