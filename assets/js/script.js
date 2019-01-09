@@ -35,6 +35,7 @@ new Vue({
     startUnixTime: "",
     fallTime: "",
     fallUnixTime: "",
+    fallBoxX: 0,
     requestAnimationHFrameId: null,
     requestAnimationVFrameId: null,
     histories: [],
@@ -70,6 +71,7 @@ new Vue({
       const fallTime = moment();
       this.fallTime = fallTime.format("HH:mm:ss.SSS");
       this.fallUnixTime = fallTime.format("x");
+      this.fallBoxX = this.x;
       if(this.isBall){
         this.draw(this.verticalMove);
       } else {
@@ -123,7 +125,8 @@ new Vue({
           this.fallTime,
           this.startUnixTime,
           this.fallUnixTime,
-          this.x - this.canvas.width / 2
+          this.x - this.targetX,
+          this.fallBoxX - this.targetX
         ]);
         return;
       }
@@ -216,7 +219,7 @@ new Vue({
     },
     formatCsv() {
       // CSVフォーマット関数
-      let content = "ボールが動き出した時間,ボールを離した時間,ボールが動き出した時間(Unix),ボールを離した時間(Unix),ターゲットからの距離\n";
+      let content = "ボールが動き出した時間,ボールを離した時間,ボールが動き出した時間(Unix),ボールを離した時間(Unix),ターゲットからの距離,ボールを離した時のターゲットからの箱の距離\n";
       for (let i in this.histories) {
         if (content === "") {
           content = this.histories[i].join(",") + "\n";

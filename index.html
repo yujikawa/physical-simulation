@@ -52,34 +52,28 @@
     <!-- Params & Results -->
     <div class="container" v-bind:style="{ display: paramsDisplay }">
       <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-12">
           <div id="parameter" class="param-panel">
             <p>パラメータ設定</p>
             <div class="row">
-              <div class="col">
+              <div class="col-sm-4">
                 <label>被験者名</label>
                 <input id="name" v-model="name" class="form-control form" type="text" placeholder="例: 田中太郎">
               </div>
             </div>
-            <div class="row">
-              <div class="col">
-                <label>x軸</label>
-                <input readonly id="x" v-model="x" class="form-control form" type="number" min=0>
-              </div>
-              <div class="col">
-                <label>y軸</label>
-                <input readonly id="y" v-model="y" class="form-control form" type="number" min=0>
-              </div>
-            </div>
 
             <div class="row">
+                <div class="col">
+                    <label>x軸</label>
+                    <input readonly id="x" v-model="x" class="form-control form" type="number" min=0>
+                  </div>
+                  <div class="col">
+                    <label>y軸</label>
+                    <input readonly id="y" v-model="y" class="form-control form" type="number" min=0>
+                  </div>
               <div class="col">
                 <label>重力加速度</label>
                 <input readonly id="g" v-model="g" class="form-control form" type="number" min=0>
-              </div>
-              <div class="col">
-                <label>水平方向速度</label>
-                <input id="vx" v-model="vx" class="form-control form" type="number" min=1 step="0.01">
               </div>
               <div class="col">
                 <label>垂直方向速度</label>
@@ -95,6 +89,11 @@
                 </div>
 
                 <div class="col">
+                  <label>水平方向速度</label>
+                  <input id="vx" v-model="vx" class="form-control form" type="number" min=1 step="0.01">
+                </div>
+
+                <div class="col">
                   <label>空気抵抗係数</label>
                   <input id="k" v-model="k" class="form-control form" type="number" min=1 step="0.01">
                 </div>
@@ -105,7 +104,7 @@
                   </div>
               </div>
               <div class="row">
-                <div class="col">
+                <div class="col-sm-4">
                   <label>ターゲットの位置（横）</label>
                   <input id="targetX" v-model="targetX" class="form-control form" type="number" min=1 max="canvas.width">
                 </div>
@@ -119,7 +118,7 @@
               <!-- <input id="fall" type="button" class="btn btn-danger" v-on:click="clear()" value="アニメーションクリア"> -->
 
               <div class="row">
-                  <div class="col">
+                  <div class="col-2">
                       <div class="toggle-form">
                           <div class="toggle">
                             <p>軌跡表示</p>
@@ -130,7 +129,7 @@
                           </div>
                         </div>
                     </div>
-                  <div class="col">
+                  <div class="col-2">
                     <div class="toggle-form">
                         <div class="toggle">
                           <p>点表示</p>
@@ -141,7 +140,7 @@
                         </div>
                       </div>
                   </div>
-                  <div class="col">
+                  <div class="col-2">
                     <div class="toggle-form">
                         <div class="toggle">
                           <p>ボール表示</p>
@@ -157,7 +156,7 @@
           </div>
         </div>
 
-        <div class="col-sm-8 result">
+        <div class="result">
           <!-- <p>結果</p> -->
           <div class="result-form d-flex justify-content-end">
             <a v-if="histories.length > 0" class="btn btn-primary download" id="download" href="#" download="{{ name }}_result.csv"
@@ -177,6 +176,7 @@
                 <th scope="col">ボールが動き出した時間(Unix)</th>
                 <th scope="col">ボールを離した時間(Unix)</th>
                 <th scope="col">ターゲットからの距離</th>
+                <th scope="col">ボールを離した時の箱のターゲットからの距離</th>
               </tr>
             </thead>
             <tbody>
@@ -187,6 +187,7 @@
                 <td>{{ h[2] }}</td>
                 <td>{{ h[3] }}</td>
                 <td>{{ h[4] }}</td>
+                <td>{{ h[5] }}</td>
               </tr>
 
             </tbody>
@@ -196,7 +197,6 @@
     </div>
 
   </div>
-
 
 
   <script src="assets/js/script.js"></script>
