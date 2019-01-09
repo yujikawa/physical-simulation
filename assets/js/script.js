@@ -148,7 +148,6 @@ new Vue({
       this.y = 30;
       this.g = 9.8;
       this.vy = 0.0;
-      this.vx = 15.0;
       this.ax = 0.0;
       this.ay = -9.8
       this.ctx.beginPath();
