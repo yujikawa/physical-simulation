@@ -104,6 +104,12 @@
                     <input id="t" v-model="t" class="form-control form" type="number" min=0.01 step="0.01">
                   </div>
               </div>
+              <div class="row">
+                <div class="col">
+                  <label>ターゲットの位置（横）</label>
+                  <input id="targetX" v-model="targetX" class="form-control form" type="number" min=1 max="canvas.width">
+                </div>
+              </div>
 
             <div class="button-panel">
               <!-- <input id="start" type="button" class="btn btn-primary"

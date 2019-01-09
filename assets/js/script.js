@@ -25,6 +25,8 @@ new Vue({
     k: 0.24, // 空気抵抗係数
     ax: 0.0,
     ay: 9.08665,
+    targetX: canvas.width / 2,
+    targetY: canvas.height,
     mode: false,
     isLine: true,
     name: "",
@@ -164,12 +166,12 @@ new Vue({
       if(this.isLine){
         this.ctx.beginPath();
         this.ctx.fillStyle = "rgb(204, 0, 0, 0.4)";
-        this.ctx.fillRect(this.canvas.width / 2, this.canvas.height - 10, 1, this.canvas.height);
+        this.ctx.fillRect(this.targetX, this.canvas.height - 10, 1, this.canvas.height);
         this.ctx.closePath();
       } else {
         this.ctx.beginPath();
         this.ctx.fillStyle = "rgb(204, 0, 0, 0.4)";
-        this.ctx.fillRect(this.canvas.width / 2, 0, 1, this.canvas.height);
+        this.ctx.fillRect(this.targetX, 0, 1, this.canvas.height);
         this.ctx.closePath();
       }
 
