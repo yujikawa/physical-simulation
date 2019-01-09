@@ -29,6 +29,7 @@ new Vue({
     targetY: canvas.height,
     mode: false,
     isLine: true,
+    isBall: true,
     name: "",
     startTime: "",
     startUnixTime: "",
@@ -69,7 +70,12 @@ new Vue({
       const fallTime = moment();
       this.fallTime = fallTime.format("HH:mm:ss.SSS");
       this.fallUnixTime = fallTime.format("x");
-      this.draw(this.verticalMove);
+      if(this.isBall){
+        this.draw(this.verticalMove);
+      } else {
+        cancelAnimationFrame(this.requestAnimationHFrameId);
+        cancelAnimationFrame(this.requestAnimationVFrameId);
+      } 
     },
     horizontalMove() {
       // 水平に動かす関数
@@ -82,15 +88,13 @@ new Vue({
       this.box();
       // taget描画
       this.target();
-      this.ctx.beginPath();
-      this.ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, false);
-      this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-      this.ctx.fill();
-      this.ctx.closePath();
+      // ballの描画
+      this.ball();
       // this.vx = this.vx + this.ax * this.t;
       this.x += this.vx * this.t;
       // this.ax = -1 * (this.k/this.m) * this.vx;
       this.requestAnimationHFrameId = requestAnimationFrame(this.horizontalMove);
+      console.log(this.requestAnimationVFrameId);
     },
     verticalMove() {
       // 垂直方向に動かす関数
@@ -103,13 +107,8 @@ new Vue({
       this.box();
       // taget描画
       this.target();
-      // 描画Start
-      this.ctx.beginPath();
-      this.ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, false);
-      this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-      this.ctx.fill();
-      this.ctx.closePath();
-      
+      // ballの描画
+      this.ball();
 
       this.vy += (this.g - (this.k/this.m))* this.t;
       this.y  += this.vy * this.t;
@@ -160,6 +159,15 @@ new Vue({
       this.target();
       this.box();
       cancelAnimationFrame(this.requestAnimationFrameId);
+    },
+    ball() {
+      if(this.isBall){
+        this.ctx.beginPath();
+        this.ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, false);
+        this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+        this.ctx.fill();
+        this.ctx.closePath();
+      }
     },
     target() {
       // ターゲット描画関数
