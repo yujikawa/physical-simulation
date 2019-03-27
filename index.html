@@ -64,44 +64,44 @@
 
             <div class="row">
                 <div class="col">
-                    <label>x軸</label>
+                    <label>x軸(m)</label>
                     <input readonly id="x" v-model="x" class="form-control form" type="number" min=0>
                   </div>
                   <div class="col">
-                    <label>y軸</label>
+                    <label>y軸(m)</label>
                     <input readonly id="y" v-model="y" class="form-control form" type="number" min=0>
                   </div>
               <div class="col">
                 <label>重力加速度</label>
                 <input readonly id="g" v-model="g" class="form-control form" type="number" min=0>
               </div>
-              <div class="col">
+              <!-- <div class="col">
                 <label>垂直方向速度</label>
                 <input readonly id="vy" v-model="vy" class="form-control form" type="number" min=1 step="0.01">
-              </div>
+              </div> -->
             </div>
 
             <p>パラメータ設定</p>
             <div class="row">
                 <div class="col">
-                  <label>物体質量</label>
+                  <label>物体質量(kg)</label>
                   <input id="m" v-model="m" class="form-control form" type="number" min=1>
                 </div>
 
                 <div class="col">
-                  <label>水平方向速度</label>
+                  <label>水平方向速度(m/s)</label>
                   <input id="vx" v-model="vx" class="form-control form" type="number" min=1 step="0.01">
                 </div>
 
                 <div class="col">
-                  <label>空気抵抗係数</label>
+                  <label>空気抵抗係数(kg/m)</label>
                   <input id="k" v-model="k" class="form-control form" type="number" min=1 step="0.01">
                 </div>
 
-                <div class="col">
+                <!-- <div class="col">
                     <label>進む割合</label>
                     <input id="t" v-model="t" class="form-control form" type="number" min=0.01 step="0.01">
-                  </div>
+                  </div> -->
               </div>
               <div class="row">
                 <div class="col-sm-4">
