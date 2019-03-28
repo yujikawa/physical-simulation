@@ -1,18 +1,21 @@
 // canvasの設定
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-var startX = 10;
-var startY = 30;
-var fieldX = 20; //(m)
-var fieldY = 20; //(m)
+var startX = 0;
+var startY = 0;
+// var fieldX = 20; //(m)
+// var fieldY = 20; //(m)
+var target = 10; //(m)
 
 new Vue({
     el: "#app",
     data: {
         width: window.innerWidth,
         height: window.innerHeight,
-        canvasWidth: '600px',
-        canvasHeight: '400px',
+        fieldX: 20, //(m)
+        fieldY: 20, //(m)
+        canvasWidth: this.fieldX * 30 + 'px',
+        canvasHeight: this.fieldY * 30 + 'px',
         anime: false,
         animeDisplay: "none",
         params: true,
@@ -34,8 +37,10 @@ new Vue({
         mode: false,
         isLine: true,
         isBall: true,
-        moveStartTime: moment(),
+        xStartTime: undefined,
+        yStartTime: undefined,
         name: "",
+        drawStartTime: "",
         startTime: "",
         startUnixTime: "",
         fallTime: "",
@@ -47,8 +52,8 @@ new Vue({
         isMouseUp: false
     },
     created: function() {
-        this.canvasWidth = this.width + 'px';
-        this.canvasHeight = (this.height - 60) + 'px';
+        // this.canvasWidth = this.width + 'px';
+        // this.canvasHeight = (this.height - 60) + 'px';
         // start地点の描画
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.beginPath();
@@ -64,11 +69,11 @@ new Vue({
     methods: {
         onMouseDown() {
             // マウスダウン関数
-            moveStartTime = moment();
             this.isMouseUp = false;
             const startTime = moment();
             this.startTime = startTime.format("HH:mm:ss.SSS");
             this.startUnixTime = startTime.format("x");
+            this.xStartTime = moment().format("x");
             this.draw(this.horizontalMove);
         },
         onMouseUp() {
@@ -78,6 +83,8 @@ new Vue({
             this.fallTime = fallTime.format("HH:mm:ss.SSS");
             this.fallUnixTime = fallTime.format("x");
             this.fallBoxX = this.x;
+            this.yStartTime = moment().format("x");
+
             if (this.isBall) {
                 this.draw(this.verticalMove);
             } else {
@@ -97,13 +104,11 @@ new Vue({
             this.target();
             // ballの描画
             this.ball();
-            // this.vx = this.vx + this.ax * this.t;
-            var current_time = moment();
-            var elapsed_time = (current_time.format('x') - this.startUnixTime) / 1000;
-            this.x = this.vx * elapsed_time;
-            // console.log(this.x + " = " + this.vx + " * " + elapsed_time);
 
-            // this.ax = -1 * (this.k/this.m) * this.vx;
+            var current_time = moment().format('x');
+            var elapsed_time = (current_time - this.xStartTime) / 1000;
+            this.x = this.vx * elapsed_time;
+
             this.requestAnimationHFrameId = requestAnimationFrame(this.horizontalMove);
         },
         verticalMove() {
@@ -120,14 +125,11 @@ new Vue({
             // ballの描画
             this.ball();
 
-            var current_time = moment();
-            var elapsed_time = (current_time.format('x') - this.startUnixTime) / 1000;
+            var current_time = moment().format('x');
+            var elapsed_time = (current_time - this.yStartTime) / 1000;
             this.y = (this.m/this.k) * Math.log ( Math.cosh( elapsed_time / Math.sqrt( this.m/(this.g * this.k) ) ) ); 
-            // this.vy += (this.g - (this.k / this.m)) * this.t;
-            // this.y += this.vy * this.t;
 
-
-            if (this.y > this.canvas.height - 5) {
+            if ((this.y/this.fieldY)* this.height > this.canvas.height) {
                 cancelAnimationFrame(this.requestAnimationHFrameId);
                 cancelAnimationFrame(this.requestAnimationVFrameId);
                 // 検証結果を追加
@@ -147,7 +149,7 @@ new Vue({
         draw(moveFunc) {
             // 描画実行関数
             this.target();
-            if (this.y > this.canvas.height - 5) {
+            if ((this.y/this.fieldY)* this.height > this.canvas.height) {
                 cancelAnimationFrame(this.requestAnimationHFrameId);
                 cancelAnimationFrame(this.requestAnimationVFrameId);
             } else {
@@ -160,12 +162,9 @@ new Vue({
             cancelAnimationFrame(this.requestAnimationHFrameId);
             cancelAnimationFrame(this.requestAnimationVFrameId);
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.x = 10;
-            this.y = 30;
+            this.x = 0;
+            this.y = 0;
             this.g = 9.8;
-            this.vy = 0.0;
-            this.ax = 0.0;
-            this.ay = -9.8
             this.ctx.beginPath();
             this.ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, false);
             this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
@@ -178,7 +177,10 @@ new Vue({
         ball() {
             if (this.isBall) {
                 this.ctx.beginPath();
-                this.ctx.arc((this.x/fieldX) * this.width, (this.y/fieldY)* this.height, 5, 0, Math.PI * 2, false);
+                console.log((this.x/this.fieldX) * this.width + " , "+ (this.y/this.fieldY)* this.height)
+                this.ctx.arc((this.x/this.fieldX) * this.width, (this.y/this.fieldY)* this.height, 5, 0, Math.PI * 2, false);
+                // this.ctx.arc((this.x/fieldX) * this.width, this.y,  5, 0, Math.PI * 2, false);
+
                 this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
                 this.ctx.fill();
                 this.ctx.closePath();
@@ -202,7 +204,7 @@ new Vue({
         box() {
             // 箱
             this.ctx.beginPath();
-            this.ctx.strokeRect((this.x/fieldX) * this.width, 20, 20, 20);
+            this.ctx.strokeRect((this.x/this.fieldX) * this.width - 10, (0/this.fieldY)* this.height - 10, 20, 20);
             this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
             this.ctx.fill();
             this.ctx.closePath();

@@ -44,7 +44,7 @@
 
     <!-- Animation -->
     <div class="anime" v-bind:style="{ display: animeDisplay }">
-      <canvas id="canvas" width=600 height=300 class="canvas"
+      <canvas id="canvas" width=400 height=400 class="canvas"
       v-bind:style="{ width: canvasWidth, height: canvasHeight }" 
       ></canvas>
     </div>
@@ -72,7 +72,7 @@
                     <input readonly id="y" v-model="y" class="form-control form" type="number" min=0>
                   </div>
               <div class="col">
-                <label>重力加速度</label>
+                <label>重力加速度(m/s<sup>2</sup>)</label>
                 <input readonly id="g" v-model="g" class="form-control form" type="number" min=0>
               </div>
               <!-- <div class="col">
@@ -105,7 +105,7 @@
               </div>
               <div class="row">
                 <div class="col-sm-4">
-                  <label>ターゲットの位置（横）</label>
+                  <label>ターゲットの位置（横）(m)</label>
                   <input id="targetX" v-model="targetX" class="form-control form" type="number" min=1 max="canvas.width">
                 </div>
               </div>
