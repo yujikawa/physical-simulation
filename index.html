@@ -44,7 +44,7 @@
 
     <!-- Animation -->
     <div class="anime" v-bind:style="{ display: animeDisplay }">
-      <canvas id="canvas" width=400 height=400 class="canvas"
+      <canvas id="canvas" class="canvas"
       v-bind:style="{ width: canvasWidth, height: canvasHeight }" 
       ></canvas>
     </div>
@@ -108,6 +108,14 @@
                   <label>ターゲットの位置（横）(m)</label>
                   <input id="targetPosition" v-model="targetPosition" class="form-control form" type="number" min=1 max="canvas.width">
                 </div>
+                <!-- <div class="col-sm-4">
+                  <label>スクリーン横軸の大きさ(m)</label>
+                  <input id="fieldX" v-model="fieldX" class="form-control form" type="number" min=1 max="canvas.width">
+                </div>
+                <div class="col-sm-4">
+                  <label>スクリーン縦軸の大きさ(m)</label>
+                  <input id="fieldY" v-model="fieldY" class="form-control form" type="number" min=1 max="canvas.width">
+                </div> -->
               </div>
 
             <div class="button-panel">
@@ -175,9 +183,8 @@
                 <th scope="col">ボールを離した時間</th>
                 <th scope="col">ボールが動き出した時間(Unix)</th>
                 <th scope="col">ボールを離した時間(Unix)</th>
-                <th scope="col">ターゲットからの距離</th>
-                <th scope="col">ボールを離した時の箱のターゲットからの距離</th>
-                <th scope="col">px/ms</th>
+                <th scope="col">ターゲットからの距離(m)</th>
+                <th scope="col">ボールを離した時の箱のターゲットからの距離(m)</th>
                 
               </tr>
             </thead>
@@ -190,7 +197,6 @@
                 <td>{{ h[3] }}</td>
                 <td>{{ h[4] }}</td>
                 <td>{{ h[5] }}</td>
-                <td>{{ h[6] }}</td>
               </tr>
 
             </tbody>

@@ -4,17 +4,16 @@ var ctx = canvas.getContext("2d");
 var startX = 0;
 var startY = 0;
 
-
 new Vue({
     el: "#app",
     data: {
         width: window.innerWidth,
         height: window.innerHeight,
-        fieldX: 20, //(m)
-        fieldY: 20, //(m)
-        targetPosition: 10, //(m)
-        canvasWidth: this.fieldX * 30 + 'px',
-        canvasHeight: this.fieldY * 30 + 'px',
+        fieldX: 30, //(m)
+        fieldY: 30, //(m)
+        canvasWidth: '200px',
+        canvasHeight: '200px',
+        targetPosition: 25, //(m)
         anime: false,
         animeDisplay: "none",
         params: true,
@@ -25,14 +24,10 @@ new Vue({
         y: startY, // y軸
         g: 9.08665, // 重力加速度(m/s^2)
         m: 5, // 質量(kg)
-        vx: 2.0, // 水平速度(m/s)
+        vx: 5.0, // 水平速度(m/s)
         vy: 0.0, // 垂直速度
         t: 0.15, // 時間
         k: 0.24, // 空気抵抗係数(kg/m)
-        ax: 0.0,
-        ay: 9.08665,
-        targetX: canvas.width / 2,
-        targetY: canvas.height,
         mode: false,
         isLine: true,
         isBall: true,
@@ -51,9 +46,12 @@ new Vue({
         isMouseUp: false
     },
     created: function() {
-        // this.canvasWidth = this.width + 'px';
-        // this.canvasHeight = (this.height - 60) + 'px';
+        this.canvasWidth = (20 * this.fieldX) + 'px';
+        this.canvasHeight = (20 * this.fieldY) +  'px';
         // start地点の描画
+        console.log(this.canvasWidth);
+        console.log(this.canvasHeight);
+        
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.beginPath();
         this.ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, false);
@@ -128,7 +126,7 @@ new Vue({
             var elapsed_time = (current_time - this.yStartTime) / 1000;
             this.y = (this.m/this.k) * Math.log ( Math.cosh( elapsed_time / Math.sqrt( this.m/(this.g * this.k) ) ) ); 
 
-            if ((this.y/this.fieldY)* this.height > this.canvas.height) {
+            if ((this.y/this.fieldY)* this.canvas.height > this.canvas.height) {
                 cancelAnimationFrame(this.requestAnimationHFrameId);
                 cancelAnimationFrame(this.requestAnimationVFrameId);
                 // 検証結果を追加
@@ -137,9 +135,8 @@ new Vue({
                     this.fallTime,
                     this.startUnixTime,
                     this.fallUnixTime,
-                    this.x - this.targetX,
-                    this.fallBoxX - this.targetX,
-                    (this.fallBoxX - startX) / (this.fallUnixTime - this.startUnixTime)
+                    this.x - this.targetPosition,
+                    this.fallBoxX - this.targetPosition,
                 ]);
                 return;
             }
@@ -148,7 +145,7 @@ new Vue({
         draw(moveFunc) {
             // 描画実行関数
             this.target();
-            if ((this.y/this.fieldY)* this.height > this.canvas.height) {
+            if ((this.y/this.fieldY)* this.canvas.height > this.canvas.height) {
                 cancelAnimationFrame(this.requestAnimationHFrameId);
                 cancelAnimationFrame(this.requestAnimationVFrameId);
             } else {
@@ -173,12 +170,11 @@ new Vue({
             cancelAnimationFrame(this.requestAnimationFrameId);
         },
         ball() {
+            // ボールの設定
             if (this.isBall) {
                 this.ctx.beginPath();
-                this.ctx.arc((this.x/this.fieldX) * this.width, (this.y/this.fieldY)* this.height, 5, 0, Math.PI * 2, false);
-                // this.ctx.arc((this.x/fieldX) * this.width, this.y,  5, 0, Math.PI * 2, false);
-
-                this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+                this.ctx.arc((this.x/this.fieldX) * this.canvas.width, (this.y/this.fieldY)* this.canvas.height, 5, 0, Math.PI * 2, false);
+                this.ctx.fillStyle = "rgba(0, 128, 0, 0.8)";
                 this.ctx.fill();
                 this.ctx.closePath();
             }
@@ -201,8 +197,8 @@ new Vue({
         box() {
             // 箱
             this.ctx.beginPath();
-            this.ctx.strokeRect((this.x/this.fieldX) * this.width - 10, (0/this.fieldY)* this.height - 10, 20, 20);
-            this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
+            this.ctx.strokeRect((this.x/this.fieldX) * this.canvas.width - 10, (0/this.fieldY)* this.canvas.height - 10, 20, 20);
+            this.ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
             this.ctx.fill();
             this.ctx.closePath();
         },
@@ -230,7 +226,7 @@ new Vue({
         },
         formatCsv() {
             // CSVフォーマット関数
-            let content = "ボールが動き出した時間,ボールを離した時間,ボールが動き出した時間(Unix),ボールを離した時間(Unix),ターゲットからの距離,ボールを離した時のターゲットからの箱の距離,px/ms\n";
+            let content = "ボールが動き出した時間,ボールを離した時間,ボールが動き出した時間(Unix),ボールを離した時間(Unix),ターゲットからの距離,ボールを離した時のターゲットからの箱の距離\n";
             for (let i in this.histories) {
                 if (content === "") {
                     content = this.histories[i].join(",") + "\n";
