@@ -3,9 +3,7 @@ var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 var startX = 0;
 var startY = 0;
-// var fieldX = 20; //(m)
-// var fieldY = 20; //(m)
-var target = 10; //(m)
+
 
 new Vue({
     el: "#app",
@@ -14,6 +12,7 @@ new Vue({
         height: window.innerHeight,
         fieldX: 20, //(m)
         fieldY: 20, //(m)
+        targetPosition: 10, //(m)
         canvasWidth: this.fieldX * 30 + 'px',
         canvasHeight: this.fieldY * 30 + 'px',
         anime: false,
@@ -162,9 +161,8 @@ new Vue({
             cancelAnimationFrame(this.requestAnimationHFrameId);
             cancelAnimationFrame(this.requestAnimationVFrameId);
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.x = 0;
-            this.y = 0;
-            this.g = 9.8;
+            this.x = startX;
+            this.y = startY;
             this.ctx.beginPath();
             this.ctx.arc(this.x, this.y, 5, 0, Math.PI * 2, false);
             this.ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
@@ -177,7 +175,6 @@ new Vue({
         ball() {
             if (this.isBall) {
                 this.ctx.beginPath();
-                console.log((this.x/this.fieldX) * this.width + " , "+ (this.y/this.fieldY)* this.height)
                 this.ctx.arc((this.x/this.fieldX) * this.width, (this.y/this.fieldY)* this.height, 5, 0, Math.PI * 2, false);
                 // this.ctx.arc((this.x/fieldX) * this.width, this.y,  5, 0, Math.PI * 2, false);
 
@@ -191,12 +188,12 @@ new Vue({
             if (this.isLine) {
                 this.ctx.beginPath();
                 this.ctx.fillStyle = "rgb(204, 0, 0, 0.4)";
-                this.ctx.fillRect(this.targetX, this.canvas.height - 10, 1, this.canvas.height);
+                this.ctx.fillRect((this.targetPosition / this.fieldX) * this.canvas.width, this.canvas.height - 10, 1, this.canvas.height);
                 this.ctx.closePath();
             } else {
                 this.ctx.beginPath();
                 this.ctx.fillStyle = "rgb(204, 0, 0, 0.4)";
-                this.ctx.fillRect(this.targetX, 0, 1, this.canvas.height);
+                this.ctx.fillRect((this.targetPosition / this.fieldX) * this.canvas.width, 0, 1, this.canvas.height);
                 this.ctx.closePath();
             }
 
