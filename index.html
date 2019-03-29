@@ -28,7 +28,8 @@
       <div class="navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item" v-bind:class="{ active: params }">
-            <a class="nav-link" v-on:click="paramsMenu()">パラメータ設定＆結果</a>
+            <a class="nav-link" v-on:click="paramsMenu()">パラメータ設定＆結果
+            </a>
           </li>
           <li class="nav-item" v-bind:class="{ active: anime }">
             <a class="nav-link" v-on:click="animeMenu()">シミュレータ</span></a>
@@ -44,7 +45,7 @@
 
     <!-- Animation -->
     <div class="anime" v-bind:style="{ display: animeDisplay }">
-      <canvas id="canvas" width=600 height=300 class="canvas"
+      <canvas id="canvas" class="canvas"
       v-bind:style="{ width: canvasWidth, height: canvasHeight }" 
       ></canvas>
     </div>
@@ -54,7 +55,8 @@
       <div class="row">
         <div class="col-sm-12">
           <div id="parameter" class="param-panel">
-            <p>パラメータ設定</p>
+            <p>パラメータ設定 横:{{ fieldX }}m 縦:{{ fieldY }}m
+            </p>
             <div class="row">
               <div class="col-sm-4">
                 <label>被験者名</label>
@@ -64,50 +66,57 @@
 
             <div class="row">
                 <div class="col">
-                    <label>x軸</label>
+                    <label>x軸(m)</label>
                     <input readonly id="x" v-model="x" class="form-control form" type="number" min=0>
                   </div>
                   <div class="col">
-                    <label>y軸</label>
+                    <label>y軸(m)</label>
                     <input readonly id="y" v-model="y" class="form-control form" type="number" min=0>
                   </div>
               <div class="col">
-                <label>重力加速度</label>
+                <label>重力加速度(m/s<sup>2</sup>)</label>
                 <input readonly id="g" v-model="g" class="form-control form" type="number" min=0>
               </div>
-              <div class="col">
+              <!-- <div class="col">
                 <label>垂直方向速度</label>
                 <input readonly id="vy" v-model="vy" class="form-control form" type="number" min=1 step="0.01">
-              </div>
+              </div> -->
             </div>
 
-            <p>パラメータ設定</p>
             <div class="row">
                 <div class="col">
-                  <label>物体質量</label>
+                  <label>物体質量(kg)</label>
                   <input id="m" v-model="m" class="form-control form" type="number" min=1>
                 </div>
 
                 <div class="col">
-                  <label>水平方向速度</label>
+                  <label>水平方向速度(m/s)</label>
                   <input id="vx" v-model="vx" class="form-control form" type="number" min=1 step="0.01">
                 </div>
 
                 <div class="col">
-                  <label>空気抵抗係数</label>
+                  <label>空気抵抗係数(kg/m)</label>
                   <input id="k" v-model="k" class="form-control form" type="number" min=1 step="0.01">
                 </div>
 
-                <div class="col">
+                <!-- <div class="col">
                     <label>進む割合</label>
                     <input id="t" v-model="t" class="form-control form" type="number" min=0.01 step="0.01">
-                  </div>
+                  </div> -->
               </div>
               <div class="row">
                 <div class="col-sm-4">
-                  <label>ターゲットの位置（横）</label>
-                  <input id="targetX" v-model="targetX" class="form-control form" type="number" min=1 max="canvas.width">
+                  <label>ターゲットの位置（横）(m)</label>
+                  <input id="targetPosition" v-model="targetPosition" class="form-control form" type="number" min=1 max="canvas.width">
                 </div>
+                <!-- <div class="col-sm-4">
+                  <label>スクリーン横軸の大きさ(m)</label>
+                  <input id="fieldX" v-model="fieldX" class="form-control form" type="number" min=1 max="canvas.width">
+                </div>
+                <div class="col-sm-4">
+                  <label>スクリーン縦軸の大きさ(m)</label>
+                  <input id="fieldY" v-model="fieldY" class="form-control form" type="number" min=1 max="canvas.width">
+                </div> -->
               </div>
 
             <div class="button-panel">
@@ -175,9 +184,8 @@
                 <th scope="col">ボールを離した時間</th>
                 <th scope="col">ボールが動き出した時間(Unix)</th>
                 <th scope="col">ボールを離した時間(Unix)</th>
-                <th scope="col">ターゲットからの距離</th>
-                <th scope="col">ボールを離した時の箱のターゲットからの距離</th>
-                <th scope="col">px/ms</th>
+                <th scope="col">ターゲットからの距離(m)</th>
+                <th scope="col">ボールを離した時の箱のターゲットからの距離(m)</th>
                 
               </tr>
             </thead>
@@ -190,7 +198,6 @@
                 <td>{{ h[3] }}</td>
                 <td>{{ h[4] }}</td>
                 <td>{{ h[5] }}</td>
-                <td>{{ h[6] }}</td>
               </tr>
 
             </tbody>

@@ -126,3 +126,11 @@ input:checked + .slider:before {
 }
 
 /* switch toggle end */
+
+.anime {
+  display: flex;
+  justify-content: center;
+}
+.canvas {
+  padding: 0;
+}
