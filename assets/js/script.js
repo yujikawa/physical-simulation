@@ -9,11 +9,11 @@ new Vue({
     data: {
         width: window.innerWidth,
         height: window.innerHeight,
-        fieldX: 30, //(m)
+        fieldX: 60, //(m)
         fieldY: 30, //(m)
-        canvasWidth: '200px',
+        canvasWidth: '300px',
         canvasHeight: '200px',
-        targetPosition: 25, //(m)
+        targetPosition: 30, //(m)
         anime: false,
         animeDisplay: "none",
         params: true,
